@@ -24,31 +24,31 @@ public class Main {
         };
 
         if (myArray[0] == -1 & myArray[1] == -1 & myArray[2] == -1 & myArray[3] == -1)
-            throw new ArithmeticException("nevernoe virajenie (net operatora)"); // Ищем оператор в выражении
+            throw new ArithmeticException("Неверное выражение (нет оператора)"); // Ищем оператор в выражении
 
         int s = 0;
         for (int i = 0; i < 4; i++) if (myArray[i] < 0) myArray[i] = 100; //заменяет все -1 на 100 для удобства
         for (int i = 1; i < 4; i++)
             if (myArray[s] > (myArray[i])) s = i; // вычисляет какой из операторов встречается первее
 
-        int index = 0;
+        int index = switch (s) {
+            case 0 -> input.indexOf("+");
+            case 1 -> input.indexOf("-");
+            case 2 -> input.indexOf("/");
+            case 3 -> input.indexOf("*");
+            default -> 0;
+        };
 
-        switch (s) {
-            case 0: index = input.indexOf("+");  break;
-            case 1: index = input.indexOf("-");  break;
-            case 2: index = input.indexOf("/");  break;
-            case 3: index = input.indexOf("*");  break;
-        }
-//Ищем аргументы в строке
+        //Ищем аргументы в строке
         String A = input.substring(0, index).trim();
         String B = input.substring(index + 1, input.length()).trim();
 //переводим аргументы в инты с помощью словаря
         int Aint = decoding(A);
         int Bint = decoding(B);
 //блок проверок
-        if (Aint == 0 | Bint == 0) throw new NumberFormatException("Dopuskautsya celie chisla 1-10, I-X");
+        if (Aint == 0 | Bint == 0) throw new NumberFormatException("Допускаются только целочисленные аргументы в диапазоне 1-10 или I-X");
         if ((Aint >= 100 & Bint >= 1 & Bint <= 10) | (Bint >= 100 & Aint >= 1 & Aint <= 10))
-            throw new ArithmeticException("ne dopuskautsya arabskie i rimskie chisla odnovremenno");
+            throw new ArithmeticException("Не допускается использовать арабские и римские числа одновременно");
 
 //блок решения выражения
         int result = 0;
@@ -69,7 +69,7 @@ public class Main {
             if (s == 1) result = Aint - Bint;
             if (s == 2) result = Aint / Bint;
             if (s == 3) result = Aint * Bint;
-            if (result < 0) throw new ArithmeticException("Rimskie chisla vsegda >0");
+            if (result < 0) throw new ArithmeticException("Результат меньше нуля (недопустимо для римских чисел)");
             return input + " = " + RomanNumerals(result);
         }
         return "ERROR";
